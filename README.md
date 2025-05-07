@@ -1,0 +1,2 @@
+# CustomShop-Skript
+SimpleSkriptStore
