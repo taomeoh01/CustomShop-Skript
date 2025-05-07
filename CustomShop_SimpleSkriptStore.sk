@@ -1,0 +1,1387 @@
+# _____  _____ ___  _________  _      _____   _____  _   ________  _____ ______  _____   _____  _____  _____ ______  _____
+#/  ___||_   _||  \/  || ___ \| |    |  ___| /  ___|| | / /| ___ \|_   _|| ___ \|_   _| /  ___||_   _||  _  || ___ \|  ___|
+#\ `--.   | |  | .  . || |_/ /| |    | |__   \ `--. | |/ / | |_/ /  | |  | |_/ /  | |   \ `--.   | |  | | | || |_/ /| |__  
+# `--. \  | |  | |\/| ||  __/ | |    |  __|   `--. \|    \ |    /   | |  |  __/   | |    `--. \  | |  | | | ||    / |  __| 
+#/\__/ / _| |_ | |  | || |    | |____| |___  /\__/ /| |\  \| |\ \  _| |_ | |      | |   /\__/ /  | |  \ \_/ /| |\ \ | |___ 
+#\____/  \___/ \_|  |_/\_|    \_____/\____/  \____/ \_| \_/\_| \_| \___/ \_|      \_/   \____/   \_/   \___/ \_| \_|\____/ 
+# 본 스크립트는 https://discord.gg/Wf77jH2skg 에서 @taome01에 의해서 제작되었습니다.
+# 본 기능에서 사용된 리소스 제공: @9oo_9oo_ , 영어 번역 도움: @wayggstar
+
+# ===============================================================
+ #Required Plugins    / Test Version | 필수 플러그인 / 테스트 버전
+  # Skript            / 2.9.0-pre1
+  # SkBee             / 3.5.6
+  # SkQuery           / 4.1.10
+  # Skript-Yaml       / 1.6.1
+  # Skript-Reflect    / 2.4
+
+  # Vault              / 1.7.3-b131
+  # BetterEconomy      / 3.1
+
+ #Recommended Plugins  / Test Version | 추천 플러그인 / 테스트 버전
+  # Citizens           / 2.0.35-b3598
+# ===============================================================
+
+# Command Part
+
+command /customshop [<string>] [<string>]:
+    aliases: 커스텀상점 , customshop:커스텀상점 , customshop:customshop
+    permission: op.op
+    permission message: §c[!] §f%yml value "Permission Message" in "config"% 
+    trigger:
+        if arg 1 is "help" or "도움말":
+            message ""
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "§a[!] §f§lCustomShop 도움말"
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§l생성 §b§l<이름>"
+                message "     §e➥ §b§l<이름>§f§l의 상점을 §a§l생성§f§l합니다."
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§l초기화"
+                message "     §e➥ §f§l저장됬던 모든 내용을 §a§l초기화§f§l합니다."
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§l리로드 §b§l<선택>"
+                message "     §e➥ §b§l<선택>§f§l에 해당된 yml을 §a§l로드§f§l합니다."
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§l설정 §b§l<이름>"
+                message "     §e➥ §b§l<이름>§f§l의 상점을 §a§l설정§f§l합니다."
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§l제거 §b§l<이름>"
+                message "     §e➥ §b§l<이름>§f§l의 상점을 §a§l제거§f§l합니다."
+            else:
+                message "§a[!] §f§lCustomShop Help"
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§lcreate §b§l<Name>"
+                message "     §e➥ §b§l<Name>§f§l's shop will be §a§lcreated§f§l."
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§lreset"
+                message "     §e➥ §f§lAll saved data will be §a§lreset§f§l."
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§lreload §b§l<Selection>"
+                message "     §e➥ §f§lThe yml corresponding to §b§l<Selection>§f§l will be §a§lloaded§f§l."
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§lsetting §b§l<Name>"
+                message "     §e➥ §b§l<Name>§f§l's shop will be §a§lconfigured§f§l."
+                message ""
+                message "  ➜ §e§l/§f§lcustomshop §a§lremove §b§l<Name>"
+                message "     §e➥ §b§l<Name>§f§l's shop will be §a§lremoved§f§l."
+            message ""
+            stop
+        if arg 1 is "reset" or "초기화":
+            customshop(player,"reset","reset",0,0)
+            customshop(player,"reset","reset",1,0)
+            if "%yml value "Language" in "config"%" is "English":
+                message "§a[!] §fInitialization completed."
+                stop
+            message "§c[!] §finitialization has not been completed."
+            stop
+        if arg 1 is "reload" or "리로드": # Syntax 'if yml "config" is loaded":' omitted because an error occurred
+            if arg 2 is set:
+                if arg 2 is "shop" or "config" or "all":
+                    if arg 2 is not "shop":
+                        load yml "plugins\customshop\config.yml"
+                        if "%yml value "Shop.Purchase.Log" in "config"%" is "true":
+                            load yml "plugins\customshop\purchaselog.txt" as "purchaselog"
+                        if "%yml value "Shop.Sale.Log" in "config"%" is "true":
+                            load yml "plugins\customshop\salelog.txt" as "salelog"
+                        if "%yml value "Language" in "config"%" is "Korean":
+                            message "§a[!] §f§l'plugins\customshop\config.yml'가 리로드가 완료되었습니다."
+                        else if "%yml value "Language" in "config"%" is "English":
+                            message "§a[!] §f'plugins\customshop\config.yml' has been reloaded."
+                        else:
+                            message "§c[!] §fUnknown language settings."
+                    if arg 2 is not "config":
+                        load yml "plugins\customshop\shop.yml"
+                        loop yml node keys "Shops" in "shop":
+                            if {_i} is set:
+                                set {_i} to "%{_i}% , %loop-value%"
+                            else:
+                                set {_i} to loop-value
+                        set yml value "List" in "shop" to "%{_i}%"
+                        save yml "shop"
+                        if "%yml value "Language" in "config"%" is "Korean":
+                            message "§a[!] §f§l'plugins\customshop\shop.yml'가 리로드가 완료되었습니다."
+                        else if "%yml value "Language" in "config"%" is "English":
+                            message "§a[!] §f'plugins\customshop\shop.yml' has been reloaded."
+                    stop
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§c[!] §f§l%arg-2%은(는) 알맞지 않습니다."
+                    stop
+                message "§c[!] §f%arg-2% is not appropriate."
+                stop
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "용도: /customshop 리로드 ..."
+                message "  §bconfig §f- §l본 기능의 설정"
+                message "  §bshop §f- §l생성된 상점"
+                message "  §ball §f- §lconfig와 shop"
+                stop
+            message "Usage: /customshop reload ..."
+            message "  §bconfig §f- The setting of this function"
+            message "  §bshop §f- The created store"
+            message "  §ball §f- shop and config"
+            stop
+        if arg 1 is "create" or "생성":
+            if arg 2 is set:
+                set {_i} to "Shops.%arg-2%"
+                if "%yml value {_i} in "shop"%" is "<none>":
+                    set yml value "Shops.%arg-2%.Use" in "shop" to true
+                    set yml value "Shops.%arg-2%.Location.X" in "shop" to 0
+                    set yml value "Shops.%arg-2%.Location.Y" in "shop" to 0
+                    set yml value "Shops.%arg-2%.Location.Z" in "shop" to 0
+                    set yml value "Shops.%arg-2%.Location.World" in "shop" to "world"
+                    set yml value "Shops.%arg-2%.Entity" in "shop" to ""
+                    set yml value "Shops.%arg-2%.Command" in "shop" to true
+                    set yml value "Shops.%arg-2%.Line 1.Row" in "shop" to 6
+                    set yml value "Shops.%arg-2%.Line 1.Money Slot" in "shop" to 49
+                    set yml value "Shops.%arg-2%.Line 1.Forward Slot" in "shop" to 53
+                    set yml value "Shops.%arg-2%.Line 1.Back Slot" in "shop" to 45
+                    loop yml node keys "Shops" in "shop":
+                        if {_i} is set:
+                            set {_i} to "%{_i}% , %loop-value%"
+                        else:
+                            set {_i} to loop-value
+                    set yml value "List" in "shop" to "%{_i}%"
+                    save yml "shop"
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        message "§a[!] §f§l상점[ %arg-2% ] 이(가) 생성되었습니다."
+                        stop
+                    message "§a[!] §fThe store[ %arg-2% ] has been created."
+                    stop
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§c[!] §f§l%arg-2%은(는) 이미 존재하는 상점입니다."
+                    stop
+                message "§c[!] §fPlease enter the name of the store you want to create."
+                stop
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "§c[!] §f§l생성할 상점 이름을 입력해주세요."
+                stop
+            message "§c[!] §fPlease type the name of the store you want to create."
+            stop
+        if arg 1 is "setting" or "설정":
+            if arg 2 is set:
+                if yml value "List" in "shop" contains arg-2:
+                    customshop(player,arg-2,"setting",0,0)
+                    stop
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§c[!] §f§l%arg-2%은(는) 존재하지 않는 상점입니다."
+                    stop
+                message "§c[!] §f%arg-2% is not exist."
+                stop
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "§c[!] §f§l설정할 상점을 입력해주세요."
+                stop
+            message "§c[!] §fPlease type the store you want to set up."
+            stop
+        if arg 1 is "remove" or "제거":
+            if arg 2 is set:
+                set {_i} to "Shops.%arg-2%"
+                if "%yml value {_i} in "shop"%" is not "<none>":
+                    delete yml value {_i} in "shop"
+                    save yml "shop"
+                    loop yml node keys "Shops" in "shop":
+                        if {_l} is set:
+                            set {_l} to "%{_l}% , %loop-value%"
+                        else:
+                            set {_l} to loop-value
+                    set yml value "List" in "shop" to {_l}
+                    if {_l} is not set:
+                        delete yml value "Shops" in "shop"
+                    save yml "shop"
+                    play sound yml value "Sounds.Success" in "config" to player
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        message "§a[!] §f상점[ %arg-2% ] 을(를) 제거하였습니다."
+                        stop
+                    message "§a[!] §fYou remove the shop [%arg-2%]"
+                    stop
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§c[!] §f%arg-2%은(는) 존재하지않는 상점입니다."
+                    stop
+                message "§c[!] §f%arg-2% is not exist."
+                stop
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "§c[!] §f§l제거할 상점을 입력해주세요."
+                stop
+            message "§c[!] §fPlease type the shop to remove."
+            stop
+        if "%yml value "Language" in "config"%" is "Korean":
+            message "§c[!] §f§l할 것을 입력해주세요. <ttp:§a§l클릭하여 §b§l목록§7§l을 확인합니다.><cmd:/customshop 도움말>[ §a§l확인§r ]"
+            stop
+        message "§c[!] §fPlease type the action. <ttp:§a§lClick §7to view §b§lthe list.><cmd:/customshop help>[ §aClick§r ]"
+        stop
+command /shop [<string>]:
+    aliases: 상점 , customshop:상점 , customshop:shop
+    trigger:
+        if arg 1 is set:
+            if "%yml value "List" in "shop"%" contains arg-1:
+                set {_i} to "Shops.%arg-1%.Use"
+                if "%yml value {_i} in "shop"%" is "true":
+                    if "%yml value {_i} in "shop"%" is "true":
+                        set {_i} to "Shops.%arg-1%.Command"
+                        if "%yml value {_i} in "shop"%" is "true":
+                            customshop(player,arg-1,"shop",0,1)
+                            play sound yml value "Sounds.Success" in "config" to player
+                            if "%yml value "Language" in "config"%" is "Korean":
+                                message "§a[!] §f§l%arg-1% 상점을 열었습니다."
+                                stop
+                            message "§a[!] §f%arg-1% store opened."
+                            stop
+                        if "%yml value "Language" in "config"%" is "Korean":
+                            message "§c[!] §f이 상점은 명령어로 열 수 없습니다."
+                            stop
+                        message "§c[!] §fThis shop cannot be opened with a command."
+                        stop
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        message "§c[!] §f§l명령어로 열 수 없는 상점입니다."
+                        stop
+                    message "§c[!] §fThis shop cannot be opened with a command."
+                    stop
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§c[!] §f§l상점[ %arg-1% ]은 활성화 상태가 아닙니다."
+                    stop
+                message "§c[!] §fStore [%arg-1%] is not active."
+                stop
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "§c[!] §f§l%arg-1%은(는) 알맞은 존재하지않는 상점입니다."
+                stop
+            message "§c[!] §f%arg-1% is a suitable non-existent store."
+        if "%yml value "Language" in "config"%" is "Korean":
+            message "§c[!] §f§l확인할 상점을 입력해주세요."
+            stop
+        message "§c[!] §fPlease enter the store you want to check."
+
+# Event Part
+
+on load: # Don't Chage this. / 이것을 변경하지마세요.
+    customshop(player,"","load",0,0)
+    if "%yml value "Language" in "config"%" is "Korean":
+        broadcast "§b[ <open url:https://discord.gg/eeyABRhD9w>SimpleSkriptStore<reset> ] §fCustomShop 1.2 §a§l로드됨"
+        stop
+    broadcast "§b[ <open url:https://discord.gg/eeyABRhD9w>SimpleSkriptStore<reset> ] §fCustomShop 1.2 §a§lLoaded"
+on command:
+    if command is "simpleskriptstore" or "simpleskriptbuy" or "simpleskriptsell":
+        cancel event
+on rightclick:
+    if event-block is set:
+        if {customshop::Block_%player%} is set:
+            cancel event
+            set {_i} to event-block
+            set yml value "%{customshop::Block_%player%}%.X" in "shop" to floor(x coord of {_i}'s location)
+            set yml value "%{customshop::Block_%player%}%.Y" in "shop" to floor(y coord of {_i}'s location)
+            set yml value "%{customshop::Block_%player%}%.Z" in "shop" to floor(z coord of {_i}'s location)
+            set yml value "%{customshop::Block_%player%}%.World" in "shop" to "%player's world%"
+            play sound yml value "Sounds.Success" in "config" to player
+            save yml "shop"
+            replace all ".Location","Shops." with "" in {customshop::Block_%player%}
+            wait 3 ticks
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "§a[!] §f§l블럭을 설정하였습니다." to player
+                open chest with 5 rows named "§f[ §6§l옵션 설정 §f] %{customshop::Block_%player%}%" to player
+            else:
+                message "§a[!] §fBlock has been set." to player
+                open chest with 5 rows named "§f[ §6option setting §f] %{customshop::Block_%player%}%" to player
+            wait 1 ticks
+            set {customshop::Setting_%player%} to {customshop::Block_%player%}
+            set {customshop::Count_%player%} to {customshop::Blockl_%player%}
+            customshop(player,{customshop::Block_%player%},"option",0,{customshop::Blockl_%player%})
+            delete {customshop::Blockl_%player%}
+            delete {customshop::Block_%player%}
+            stop
+        loop yml node keys "Shops" in "shop":
+            set {_i} to "Shops.%loop-value%.Use"
+            if "%yml value {_i} in "shop"%" is "true":
+                loop "X","Y","Z","World":
+                    set {_l%loop-value-2%} to "Shops.%loop-value-1%.Location.%loop-value-2%"
+                if "%yml value {_lX} in "shop"%,%yml value {_lY} in "shop"%,%yml value {_lZ} in "shop"%,%yml value {_lWorld} in "shop"%" is "%floor(x coord of location of block)%,%floor(y coord of location of block)%,%floor(z coord of location of block)%,%world of player%":
+                    customshop(player,loop-value,"shop",0,1)
+                    play sound yml value "Sounds.Success" in "config" to player
+                    cancel event
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        message "§a[!] §f§l%loop-value% 상점을 열었습니다." to player
+                        stop
+                    message "§a[!] §fYou open the %loop-value% shop." to player
+                    stop
+    if event-entity is set:
+        if {customshop::Entity_%player%} is set:
+            if event-entity is not a player:
+                cancel event
+                set yml value {customshop::Entity_%player%} in "shop" to uuid of event-entity
+                save yml "shop"
+                play sound yml value "Sounds.Success" in "config" to player
+                replace all ".Entity","Shops." with "" in {customshop::Entity_%player%}
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§a[!] §f§l%uuid of event-entity%으(로) 엔티티를 설정하였습니다." to player
+                    open chest with 5 rows named "§f[ §6§l옵션 설정 §f] %{customshop::Entity_%player%}%" to player
+                else:
+                    message "§a[!] §fEntity has been set to %uuid of event-entity%." to player
+                    open chest with 5 rows named "§f[ §6option setting §f] %{customshop::Entity_%player%}%" to player
+                wait 1 ticks
+                set {customshop::Setting_%player%} to {customshop::Entity_%player%}
+                set {customshop::Count_%player%} to {customshop::Entityl_%player%}
+                customshop(player,{customshop::Entity_%player%},"option",0,{customshop::Entityl_%player%})
+                delete {customshop::Entityl_%player%}
+                delete {customshop::Entity_%player%}
+                stop
+            play sound yml value "Sounds.Fail" in "config" to player
+        loop yml node keys "Shops" in "shop":
+            set {_i} to "Shops.%loop-value%.Use"
+            if "%yml value {_i} in "shop"%" is "true":
+                set {_i} to "Shops.%loop-value%.Entity"
+                if "%yml value {_i} in "shop"% " is "%uuid of event-entity% ":
+                    customshop(player,loop-value,"shop",0,1)
+                    play sound yml value "Sounds.Success" in "config" to player
+                    cancel event
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        message "§a[!] §f§l%loop-value% 상점을 열었습니다." to player
+                        stop
+                    message "§a[!] §fYou open the %loop-value% shop." to player
+                    stop
+        stop
+on sign change:
+    if {customshop::Sign_%player%} is "구매가" or "purchase" or "판매가" or "sale":
+        set {_i} to "Purchase"
+        if {customshop::Sign_%player%} is "판매가" or "sale":
+            set {_i} to "Sale"
+        if line 1 parsed as integer is set:
+            set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_i}%" in "shop" to line 1 parsed as integer
+        else:
+            set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_i}%" in "shop" to 0
+        save yml "shop"
+        delete block above player
+        wait 1 ticks
+        customshop(player,{customshop::Setup_%player%},"item",1,{customshop::Count_%player%})
+        delete {customshop::Sign_%player%}
+    if {customshop::Sings_%player%} is set:
+        if "%{customshop::Sings_%player%}%" is not "<none>":
+            set {_i} to line 1 parsed as integer
+            if {_i} is not set:
+                set {_i} to 1
+            if {_i} > 64:
+                set {_i} to 1
+            if {_i} < 1:
+                set {_i} to 1
+            delete block above player
+            customshop(player,{customshop::Sings_%player%},"item",1,{_i}) 
+            wait 2 ticks
+            delete {customshop::Sings_%player%}
+on tab complete:
+    player is op
+    if event-string is "/shop" or "/customshop:shop" or "/customshop:상점" or "/상점":
+        loop yml node keys "Shops" in "shop":
+            set {_i} to "Shops.%loop-value%.Use"
+            if "%yml value {_i} in "shop"%" is "true":
+                set {_i} to "Shops.%loop-value%.Command"
+                if "%yml value {_i} in "shop"%" is "true":
+                    add loop-value to tab completions for position 1
+    if event-string is "/customshop" or "/customshop:customshop" or "/customshop:커스텀상점" or "/커스텀상점":
+        if "%yml value "Language" in "config"%" is "Korean":
+            set tab completions for position 1 to "초기화","리로드","생성","제거","설정","도움말"
+        else if "%yml value "Language" in "config"%" is "English":
+            set tab completions for position 1 to "reset","reload","create","remove","setting","help"
+        else:
+            set tab completions for position 1 to "The language setting is invalid."
+        if tab arg-1 is "설정" or "setting" or "제거" or "remove":
+            set tab completions for position 2 to yml node key "Shops" in "shop"
+        if tab arg-1 is "reload" or "리로드":
+            set tab completions for position 2 to "config","shop","all"
+on inventory click:
+    if {customshop::Shop_%player%} is set:
+        cancel event
+        if "%click type% " contains "mouse":
+            set {_right} to "Shops.%{customshop::Shop_%player%}%.Line %{customshop::Count_%player%}%.Forward Slot"
+            set {_left} to "Shops.%{customshop::Shop_%player%}%.Line %{customshop::Count_%player%}%.Back Slot"
+            set {_money} to "Shops.%{customshop::Shop_%player%}%.Line %{customshop::Count_%player%}%.Money Slot"
+            if event-item is bowl or feather or barrel:
+                if name of event-item is "§f[ §6§l이전으로 §f]" or "§f[ §6BACK §f]" or "§f[ §6§l다음으로 §f]" or "§f[ §6NEXT §f]":
+                    if "%yml value {_left} in "shop"% " is "%index of event-slot% ":
+                        subtract 1 from {customshop::Count_%player%}
+                        customshop(player,{customshop::Shop_%player%},"menu",0,{customshop::Count_%player%})
+                        play sound "ui.button.click" to player
+                        stop
+                    if "%yml value {_right} in "shop"% " is "%index of event-slot% ":
+                        add 1 to {customshop::Count_%player%}
+                        customshop(player,{customshop::Shop_%player%},"menu",0,{customshop::Count_%player%})
+                        play sound "ui.button.click" to player
+                        stop
+                if "%yml value {_money} in "shop"% " is "%index of event-slot% ":
+                    stop
+            if slot index of event-slot of current inventory of player is event-item:
+                loop yml node keys "Shops.%{customshop::Shop_%player%}%.Line %{customshop::Count_%player%}%" in "shop":
+                    if loop-value is not "Row" or "Money Slot" or "Forward Slot" or "Back Slot":
+                        set {_i} to "Shops.%{customshop::Shop_%player%}%.Line %{customshop::Count_%player%}%.%loop-value%.Slot"
+                        if "%yml value {_i} in "shop"% " is "%index of event-slot% ":
+                            set {_l} to "Shops.%{customshop::Shop_%player%}%.Line %{customshop::Count_%player%}%.%loop-value%"
+                if {_l} is set:
+                    if "%click type%" contains "left mouse button":
+                        if "%click type% " contains "shift":
+                            set {customshop::Shift_%player%} to true
+                        customshop(player,{customshop::Shop_%player%},"buy",index of event-slot,{customshop::Count_%player%})
+                    if "%click type%" contains "right mouse button":
+                        if "%click type% " contains "shift":
+                            set {customshop::Shift_%player%} to true
+                        customshop(player,{customshop::Shop_%player%},"sell",index of event-slot,{customshop::Count_%player%})
+    if {customshop::Setting_%player%} is set:
+        cancel event
+        if name of event-item is "§f[ §6§l옵션 설정 §f]" or "§f[ §6option setting §f]":
+            play sound yml value "Sounds.Success" in "config" to player
+            set {_shop} to {customshop::Setting_%player%}
+            set {_count} to {customshop::Count_%player%}
+            if "%yml value "Language" in "config"%" is "Korean":
+                open chest with 5 rows named "§f[ §6§l옵션 설정 §f] %{customshop::Setting_%player%}%" to player
+            else:
+                open chest with 5 rows named "§f[ §6option setting §f] %{customshop::Setting_%player%}%" to player
+            set {customshop::Setting_%player%} to {_shop}
+            set {customshop::Count_%player%} to {_count}
+            customshop(player,{customshop::Setting_%player%},"option",0,{customshop::Count_%player%})
+        if name of event-item is "§f[ §6§l아이템 설정 §f]" or "§f[ §6item setting §f]":
+            play sound yml value "Sounds.Success" in "config" to player
+            customshop(player,{customshop::Setting_%player%},"item",0,{customshop::Count_%player%})
+    if {customshop::Option_%player%} is set:
+        cancel event
+        if slot index of event-slot of current inventory of player is event-item:
+            if index of event-slot is 10 or 11 or 12 or 14 or 15 or 16:
+                if event-item is chain:
+                    set {_i} to name of event-item
+                    replace all "§f§l[ 줄 : ","§f[ Row : "," ]"," ]" with "" in {_i}
+                    set yml value "Shops.%{customshop::Option_%player%}%.Line %{customshop::Count_%player%}%.Row" in "shop" to {_i} parsed as integer
+                    play sound yml value "Sounds.Success" in "config" to player
+                else:
+                    play sound yml value "Sounds.Fail" in "config" to player
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        message "§c[!] §f§l이미 선택된 줄수 입니다." to player
+                    else:
+                        message "§c[!] §fThis line is already selected." to player
+            if index of event-slot is 13:
+                set {_l} to "Shops.%{customshop::Option_%player%}%.Use"
+                if "%yml value {_l} in "shop"% " is "true ":
+                    set yml value {_l} in "shop" to false
+                else:
+                    set yml value {_l} in "shop" to true
+                play sound yml value "Sounds.Success" in "config" to player
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§a[!] §f§l상점 사용 유무를 %yml value {_l} in "shop"%로 설정하였습니다." to player
+                else:
+                    message "§a[!] §fShop usage has been set to %yml value {_l} in "shop"%." to player
+            if index of event-slot is 19:
+                set {_l} to "Shops.%{customshop::Option_%player%}%.Command"
+                if "%yml value {_l} in "shop"% " is "true ":
+                    set yml value {_l} in "shop" to false
+                else:
+                    set yml value {_l} in "shop" to true
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§a[!] §f§l커맨드 사용 유무를 %yml value {_l} in "shop"%로 설정하였습니다." to player
+                else:
+                    message "§a[!] §fCommand usage has been set to %yml value {_l} in "shop"%." to player
+                play sound yml value "Sounds.Success" in "config" to player
+            if index of event-slot is 22:
+                set {customshop::Block_%player%} to "Shops.%{customshop::Option_%player%}%.Location"
+                set {customshop::Blockl_%player%} to {customshop::Count_%player%}
+                play sound "ui.button.click" to player
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§a[!] §f블럭을 우클릭하여 지정합니다." to player
+                else:
+                    message "§a[!] §fRight-click a block to select it." to player
+                close player's inventory
+                stop
+            if index of event-slot is 25:
+                set {customshop::Entity_%player%} to "Shops.%{customshop::Option_%player%}%.Entity"
+                set {customshop::Entityl_%player%} to {customshop::Count_%player%}
+                play sound "ui.button.click" to player
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§a[!] §f엔티티를 우클릭하여 지정합니다." to player
+                else:
+                    message "§a[!] §fRight-click an entity to select it." to player
+                close player's inventory
+                stop
+            if index of event-slot is 28:
+                set {_i} to "Shops.%{customshop::Option_%player%}%.Line %-1 + {customshop::Count_%player%}%"
+                if "%yml value {_i} in "shop"%" is not "<none>":
+                    delete yml value "Shops.%{customshop::Option_%player%}%.Line %{customshop::Count_%player%}%" in "shop"
+                    loop yml node keys "Shops.%{customshop::Option_%player%}%" in "shop":
+                        if loop-value contains "Line":
+                            set {_i} to loop-value
+                            replace all "Line " with "" in {_i}
+                            if {_i} parsed as integer > {customshop::Count_%player%}:
+                                loop yml node keys "Shops.%{customshop::Option_%player%}%.Line %{_i} parsed as integer%" in "shop":
+                                    set yml value "Shops.%{customshop::Option_%player%}%.Line %-1 + {_i} parsed as integer%.%loop-value-2%" in "shop" to yml value "Shops.%{customshop::Option_%player%}%.Line %{_i} parsed as integer%.%loop-value-2%" in "shop"
+                    if "%{_i} parsed as integer%" is "1":
+                        set {_i} to 1 + {_i} parsed as integer
+                    delete yml value "Shops.%{customshop::Option_%player%}%.Line %{_i} parsed as integer%" in "shop"
+                    save yml "shop"
+                    set {_i} to "Shops.%{customshop::Option_%player%}%.Line %{customshop::Count_%player%}%" 
+                    if "%yml value {_i} in "shop"%" is "<none>":
+                        subtract 1 from {customshop::Count_%player%}
+                    play sound yml value "Sounds.Success" in "config" to player
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        message "§a[!] §f§l상점 라인을 제거하였습니다." to player
+                    else:
+                        message "§a[!] §fShop line has been removed." to player
+                else if "%yml value "Language" in "config"%" is "Korean":
+                    message "§c[!] §f§l제거할 수 없습니다." to player
+                    play sound yml value "Sounds.Fail" in "config" to player
+                else:
+                    message "§c[!] §fCannot be removed." to player
+                    play sound yml value "Sounds.Fail" in "config" to player
+            if index of event-slot is 34:
+                customshop(player,{customshop::Option_%player%},"item",1,{customshop::Count_%player%})
+                play sound "ui.button.click" to player
+                stop
+            if index of event-slot is 36:
+                if event-item is feather:
+                    subtract 1 from {customshop::Count_%player%}
+                    play sound "ui.button.click" to player
+            if index of event-slot is 44:
+                if event-item is feather:
+                    if lore of event-item is ""," §7§l클릭하여 다음 라인을 추가합니다.","" or ""," §7Click to add a new one.","":
+                        set {_l} to "Shops.%{customshop::Option_%player%}%"
+                        set {_l} to "Shops.%{customshop::Option_%player%}%.Line %size of yml node keys {_l} in "shop" -3%"
+                        set yml value "%{_l}%.Row" in "shop" to 6
+                        set yml value "%{_l}%.Money Slot" in "shop" to 49
+                        set yml value "%{_l}%.Forward Slot" in "shop" to 53
+                        set yml value "%{_l}%.Back Slot" in "shop" to 45
+                        if "%yml value "Language" in "config"%" is "Korean":
+                            message "§a[!] §f§l라인을 추가하였습니다." to player
+                        else:
+                            message "§a[!] §fLine has been added." to player
+                    add 1 to {customshop::Count_%player%}
+                    play sound "ui.button.click" to player
+            save yml "shop"
+            customshop(player,{customshop::Option_%player%},"option",0,{customshop::Count_%player%})
+    if {customshop::Item_%player%} is set:
+        cancel event
+        if slot index of event-slot of current inventory of player is event-item:
+            if {customshop::Item_%player%} is true:
+                play sound yml value "Sounds.Fail" in "config" to player
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§c[!] §f§l지금은 사용할 수 없습니다." to player
+                    stop
+                message "§c[!] §fCannot be used right now." to player
+                stop
+            if name of event-item contains "§f[ §aSetting §f]" or "§f[ §a§l설정 §f]" or "§7클릭하여 아이템을 설정합니다." or "§7Click to configure the item.":
+                loop yml node key "Shops.%{customshop::Item_%player%}%.Line %{customshop::Count_%player%}%" in "shop":
+                    set {_i} to "Shops.%{customshop::Item_%player%}%.Line %{customshop::Count_%player%}%.%loop-value%.Slot"
+                    if "%yml value {_i} in "shop"%" is "%index of event-slot%":
+                        set {customshop::Integer_%player%} to loop-value
+                        exit loop
+                play sound "ui.button.click" to player
+                customshop(player,{customshop::Item_%player%},"setup",index of event-slot,{customshop::Count_%player%})
+    if {customshop::Setup_%player%} is set:
+        if slot index of event-slot of current inventory of player is event-item:
+            if index of event-slot is not 13:
+                play sound "ui.button.click" to player
+                cancel event
+                if "%{customshop::String_%player%}%" parsed as integer is set:
+                    set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.Item %{customshop::String_%player%}%.Slot" in "shop" to "%{customshop::String_%player%}%" parsed as integer
+                    set {customshop::String_%player%} to "Item %{customshop::String_%player%}%"
+                if name of slot 13 of current inventory of player is set:
+                    set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.Name" in "shop" to name of slot 13 of current inventory of player
+                loop lore of slot 13 of current inventory of player:
+                    add 1 to {_a}
+                    set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.Lore.line %{_a}%" in "shop" to line {_a} of lore of slot 13 of current inventory of player
+                set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.Item" in "shop" to "%slot 13 of current inventory of player named "" with lore ""%"
+                if name of slot 13 of current inventory of player is set:
+                    set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.Name" in "shop" to name of slot 13 of current inventory of player
+                else:
+                    delete yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.Name" in "shop"
+                loop "1","10","100":
+                    loop "Purchase","Sale":
+                        set {_n} to yml value "Money.Display" in "config"
+                        replace all "%%s" with loop-value-1 in {_n}
+                        set {_c} to yml value "Money.Display" in "config"
+                        set {_l} to "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%loop-value-2%"
+                        if "%yml value "Money.Thousands Separator" in "config"%" is "true":
+                            set {_l} to "%0 + yml value {_l} in "shop"%"
+                            replace all "%%s" with ThSe_Customshop({_l} parsed as integer) in {_c}
+                        else:
+                            replace all "%%s" with "%yml value {_l} in "shop"%" in {_c}
+                        if name of event-item is "§f[ %{_n}% §a§l추가§f ] | [ %{_c}% ]" or "§f[ %{_n}% §aAdd§f ] | [ %{_c}% ]" or "§f[ %{_n}% §c§l제거§f ] | [ %{_c}% ]" or "§f[ %{_n}% §cRemove§f ] | [ %{_c}% ]":
+                            set {_o} to loop-value-1
+                            set {_z} to "add"
+                            if name of event-item is "§f[ %{_n}% §c§l제거§f ] | [ %{_c}% ]" or "§f[ %{_n}% §cRemove§f ] | [ %{_c}% ]":
+                                set {_z} to "remove"
+                            if {_z} is "add":
+                                if index of event-slot < 4:
+                                    set {_m} to "Purchase"
+                                else:
+                                    set {_m} to "Sale"
+                            else if index of event-slot < 22:
+                                set {_m} to "Purchase"
+                            else:
+                                set {_m} to "Sale"
+                set {_q} to "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%"
+                if {_q} is not a item:
+                    set yml value {_q} in "shop" to "%yml value {_q} in "shop"%" parsed as integer
+                if {_z} is "add":
+                    play sound yml value "Sounds.success" in "config" to player
+                    if "%click type% " contains "shift":
+                        set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop" to (0 + (1000 * {_o} parsed as integer) + yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop")
+                    else:
+                        set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop" to 0 + {_o} parsed as integer + yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop"
+                if {_z} is "remove":
+                    play sound yml value "Sounds.success" in "config" to player
+                    set {_x} to "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%"
+                    if "%yml value {_x} in "shop"%" is "0": 
+                        set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop" to -1
+                        save yml "shop"
+                        customshop(player,{customshop::Setup_%player%},"setup",{customshop::Integer_%player%},{customshop::Count_%player%})
+                        stop
+                    if "%click type% " contains "shift":
+                        set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop" to (0 - (1000 * {_o} parsed as integer) + yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop")
+                    else:
+                        set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop" to 0 - {_o} parsed as integer + yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop"
+                    set {_i} to yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop"
+                    if "%{_i}%" contains "-":
+                        set {_i} to "%{_i}%"
+                        replace all "-" with "" in {_i}
+                        set {_i} to {_i} parsed as integer
+                        if -1 * {_i} < -1:
+                            set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%" in "shop" to 0
+                if index of event-slot is 9 or 15:
+                    play sound yml value "Sounds.success" in "config" to player
+                    loop "Setup_","Count_","String_","Integer_":
+                        set {_l%loop-value%} to {customshop::%loop-value%%player%}
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        set {_m} to "판매가"
+                        if index of event-slot is 9:
+                            set {_m} to "구매가"
+                    else:
+                        set {_m} to "sale"
+                        if index of event-slot is 9:
+                            set {_m} to "purchase"
+                    set {customshop::Sign_%player%} to {_m}
+                    close player's inventory
+                    set block above player to oak sign 
+                    open sign gui above location of player to player
+                    loop "Setup_","Count_","String_","Integer_":
+                        set {customshop::%loop-value%%player%} to {_l%loop-value%}
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        message "§a[!] §f§l설정할 %{_m}%을(를) 입력해주세요." to player
+                    else:
+                        message "§a[!] §fPlease enter the %{_m}% to configure." to player
+                    stop
+                if index of event-slot is 11 or 17:
+                    set {_m} to "Set Bought"
+                    if index of event-slot is 17:
+                        set {_m} to "All Sales"
+                    play sound yml value "Sounds.success" in "config" to player
+                    set {_i} to "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%{_m}%"
+                    if "%yml value {_i} in "shop"%" is "true":
+                        set yml value {_i} in "shop" to false
+                    else:
+                        set yml value {_i} in "shop" to true
+                loop "Purchase","Sale","Set Bought","All Sales":
+                    if {customshop::%player%::%loop-value%} is set:
+                        set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.%loop-value%" in "shop" to {customshop::%player%::%loop-value%}
+                save yml "shop"
+                customshop(player,{customshop::Setup_%player%},"setup",{customshop::Integer_%player%},{customshop::Count_%player%})
+on inventory close: 
+    if {customshop::Setup_%player%} is set:
+        if {customshop::Sign_%player%} is not set:
+            if name of event-inventory contains "§f[ §l%{customshop::Setup_%player%}%상점 §f]" or "[ %{customshop::Setup_%player%}% Shop ]":
+                set {_n} to "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%"
+                loop yml node key {_n} in "shop":
+                    set {_n} to "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%loop-value%.Slot"
+                    if "%yml value {_n} in "shop"%" is "%{customshop::String_%player%}%":
+                        set {customshop::String_%player%} to loop-value
+                if "%{customshop::String_%player%}%" parsed as integer is set:
+                    set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.Item %{customshop::String_%player%}%.Slot" in "shop" to "%{customshop::String_%player%}%" parsed as integer
+                    set {customshop::String_%player%} to "Item %{customshop::String_%player%}%"
+                if name of slot 13 of current inventory of player is set:
+                    set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.Name" in "shop" to name of slot 13 of current inventory of player
+                else:
+                    delete yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.Name" in "shop"
+                loop lore of slot 13 of current inventory of player:
+                    add 1 to {_i}
+                    set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.Lore.line %{_i}%" in "shop" to line {_i} of lore of slot 13 of current inventory of player
+                set yml value "Shops.%{customshop::Setup_%player%}%.Line %{customshop::Count_%player%}%.%{customshop::String_%player%}%.Item" in "shop" to "%slot 13 of current inventory of player named "" with lore ""%"
+                save yml "shop"
+                add 1 to {_i}
+    if {_i} is not set:
+        loop "Shop_","Count_","Shift_","Setting_","Item_","Option_","Setup_","Integer_","String_":
+            delete {customshop::%loop-value%%player%}
+        stop
+    wait 1 ticks
+    customshop(player,{customshop::Setup_%player%},"item",1,{customshop::Count_%player%})
+    delete {customshop::Setup_%player%}
+
+# Function Part
+
+function ThSe_Customshop(n:number) :: text:
+    set {_h} to "%{_n}%"
+    replace all "," with "" in {_h}
+    loop round up length of {_h} / 3 times:
+        set {_i} to last 3 characters of {_h}
+        set {_h} to first length of {_h} - 3 characters of {_h}
+        if loop-number = 1:
+            set {_p} to "%{_i}%"
+        else:
+            set {_p} to "%{_i}%,%{_p}%"
+    return {_p}    
+function customshop(user:player,shop:string,chose:string,item:integer,count:integer):
+    if {_chose} is "load":
+        load yml "plugins\customshop\config.yml" as "config"
+        load yml "plugins\customshop\shop.yml" as "shop"
+        if "%yml value "Shop.Purchase.Log" in "config"%" is "true":
+            load yml "plugins\customshop\purchaselog.txt" as "purchaselog"
+        if "%yml value "Shop.Sale.Log" in "config"%" is "true":
+            load yml "plugins\customshop\salelog.txt" as "salelog"
+        if yml "config" is empty:
+            customshop({_user},"csc","reset",0,0)
+        if yml "shop" is empty:
+            customshop({_user},"csc","reset",1,0)
+    if {_chose} is "setting":
+        play sound yml value "Sounds.Success" in "config" to {_user}
+        if "%yml value "Using Resource" in "config"%" is "true":
+            open chest with 2 rows named "§f" to {_user}
+            set {customshop::Setting_%{_user}%} to {_shop}
+            set {customshop::Count_%{_user}%} to 1
+            if "%yml value "Language" in "config"%" is "Korean":
+                set slot 11 of current inventory of {_user} to bowl with custom model data 504 named "§f[ §6§l옵션 설정 §f]" with lore ""," §7클릭하여 옵션 설정창으로 이동합니다.",""
+                set slot 15 of current inventory of {_user} to bowl with custom model data 505 named "§f[ §6§l아이템 설정 §f]" with lore ""," §7클릭하여 아이템 설정창으로 이동합니다.",""
+                set slot 10,12,1,2,3 of current inventory of {_user} to bowl named "§f[ §6§l옵션 설정 §f]" with lore ""," §7클릭하여 옵션 설정창으로 이동합니다.",""
+                set slot 14,16,5,6,7 of current inventory of {_user} to bowl named "§f[ §6§l아이템 설정 §f]" with lore ""," §7클릭하여 아이템 설정창으로 이동합니다.",""
+                message "§a[!] §f§l%{_shop}% 상점 설정을 열었습니다." to {_shop}
+                stop
+            set slot 11 of current inventory of {_user} to bowl with custom model data 504 named "§f[ §6option setting §f]" with lore ""," §7Click to move to the options settings pages.",""
+            set slot 15 of current inventory of {_user} to bowl with custom model data 505 named "§f[ §6item setting §f]" with lore ""," §7Click to move to the item settings pages.",""
+            set slot 10,12,1,2,3 of current inventory of {_user} to bowl named "§f[ §6option setting §f]" with lore ""," §7Click to move to the options settings pages.",""
+            set slot 14,16,5,6,7 of current inventory of {_user} to bowl named "§f[ §6item setting §f]" with lore ""," §7Click to move to the item settings pages",""
+            message "§a[!] §fYou open the %{_shop}% shop set up." to {_shop}
+            stop
+        if "%yml value "Language" in "config"%" is "Korean":
+            open chest with 1 rows named "§f[ §6§l%{_shop}% 설정 §f]" to {_user}
+            set {customshop::Setting_%{_user}%} to {_shop}
+            set {customshop::Count_%{_user}%} to 1
+            set slot 2 of current inventory of {_user} to anvil named "§f[ §6§l옵션 설정 §f]" with lore ""," §7클릭하여 옵션 설정창으로 이동합니다.",""
+            set slot 6 of current inventory of {_user} to emerald named "§f[ §6§l아이템 설정 §f]" with lore ""," §7클릭하여 아이템 설정창으로 이동합니다.",""
+            message "§a[!] §f§l%{_shop}% 상점 설정을 열었습니다." to {_shop}
+            stop
+        open chest with 1 rows named "§f[ §6%{_shop}% setting §f]" to {_user}
+        set {customshop::Setting_%{_user}%} to {_shop}
+        set {customshop::Count_%{_user}%} to 1
+        set slot 2 of current inventory of {_user} to anvil named "§f[ §6option setting §f]" with lore ""," §7Click to move to the options settings pages.",""
+        set slot 6 of current inventory of {_user} to emerald named "§f[ §6item setting §f]" with lore ""," §7Click to move to the item settings pages.",""
+        message "§a[!] §fYou open the %{_shop}% shop set up." to {_user}
+    if {_chose} is "menu":
+        loop 54 times:
+            set slot loop-value -1 of current inventory of {_user} to air
+        if "%yml value "Using Resource" in "config"%" is "true":
+            set {_l} to "Shops.%{_shop}%"
+            set {_money.display} to "%yml value "Money.Display" in "config"%"
+            set {_money} to "%{_user}'s money%"
+            if "%yml value "Money.Thousands Separator" in "config"%" is "true":
+                set {_money} to ThSe_Customshop({_money} parsed as integer)
+            set {_s} to "%%s"
+            replace all "%{_s}%" with "%{_money}%" in {_money.display}
+            set {_i} to  "%{_l}%.Line %{_count}%.Money Slot"
+            set slot yml value {_i} in "shop" of current inventory of {_user} to bowl with custom model data 501 named "%{_money.display}%" with lore "§f[ %{_shop}% ] §7%{_count}%/%size of yml node keys {_l} in "shop" -4%"
+            delete {_i}
+            loop yml node keys {_l} in "shop":
+                if loop-value is not "Use" or "Location" or "Command" or "Entity":
+                    add 1 to {_i}
+            if {_i} is not {_count}:
+                if {_i} > 1:
+                    set {_l} to "Shops.%{_shop}%.Line %{_count}%.Forward Slot"
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        set slot ("%yml value {_l} in "shop"%" parsed as integer) of current inventory of {_user} to bowl with custom model data 503 named "§f[ §6§l다음으로 §f]" with lore ""," §7클릭하여 다음장으로 넘깁니다.",""
+                    else:
+                        set slot ("%yml value {_l} in "shop"%" parsed as integer) of current inventory of {_user} to bowl with custom model data 503 named "§f[ §6NEXT §f]" with lore ""," §7Click to turn over next pages.",""
+            if {_count} > 1:
+                set {_l} to "Shops.%{_shop}%.Line %{_count}%.Back Slot"
+                if "%yml value "Language" in "config"%" is "Korean":
+                    set slot ("%yml value {_l} in "shop"%" parsed as integer) of current inventory of {_user} to bowl with custom model data 502 named "§f[ §6§l이전으로 §f]" with lore ""," §7클릭하여 이전장으로 넘깁니다.",""
+                else:
+                    set slot ("%yml value {_l} in "shop"%" parsed as integer) of current inventory of {_user} to bowl with custom model data 502 named "§f[ §6BACK §f]" with lore ""," §7Click to turn over previous pages.",""
+        else:
+            set {_l} to "Shops.%{_shop}%"
+            set {_money.display} to "%yml value "Money.Display" in "config"%"
+            set {_money} to "%{_user}'s money%"
+            if "%yml value "Money.Thousands Separator" in "config"%" is "true":
+                set {_money} to ThSe_Customshop({_money} parsed as integer)
+            set {_s} to "%%s"
+            replace all "%{_s}%" with "%{_money}%" in {_money.display}
+            set {_i} to "%{_l}%.Line %{_count}%.Money Slot"
+            set slot yml value {_i} in "shop" of current inventory of {_user} to barrel named {_money.display} with lore "§f[ %{_shop}% ] §7%{_count}%/%size of yml node keys {_l} in "shop" -4%"
+            delete {_i}
+            loop yml node keys {_l} in "shop":
+                if loop-value is not "Use" or "Location" or "Command" or "Entity":
+                    add 1 to {_i}
+            if {_i} is not {_count}:
+                if {_i} > 1:
+                    set {_l} to "Shops.%{_shop}%.Line %{_count}%.Forward Slot"
+                    if "%yml value "Language" in "config"%" is "Korean":
+                        set slot ("%yml value {_l} in "shop"%" parsed as integer) of current inventory of {_user} to feather named "§f[ §6§l다음으로 §f]" with lore ""," §7클릭하여 다음장으로 넘깁니다.",""
+                    else:
+                        set slot ("%yml value {_l} in "shop"%" parsed as integer) of current inventory of {_user} to feather named "§f[ §6NEXT §f]" with lore ""," §7Click to turn over next pages.",""
+            if {_count} > 1:
+                set {_l} to "Shops.%{_shop}%.Line %{_count}%.Back Slot"
+                if "%yml value "Language" in "config"%" is "Korean":
+                    set slot ("%yml value {_l} in "shop"%" parsed as integer) of current inventory of {_user} to feather named "§f[ §6§l이전으로 §f]" with lore ""," §7클릭하여 이전장으로 넘깁니다.",""
+                else:
+                    set slot ("%yml value {_l} in "shop"%" parsed as integer) of current inventory of {_user} to feather named "§f[ §6BACK §f]" with lore ""," §7Click to turn over previous pages.",""
+        loop (-2 + size of yml node keys "Shops.%{_shop}%.Line %{_count}%" in "shop") times:
+            set {_l} to "Shops.%{_shop}%.Line %{_count}%"
+            loop yml node keys {_l} in "shop":
+                set {_l} to "Shops.%{_shop}%.Line %{_count}%.%loop-value-2%"
+                if yml value "%{_l}%.Item" in "shop" is set:
+                    set {_p} to yml value "%{_l}%.Item" in "shop"
+                    set {_item} to yml value "%{_l}%.Item" in "shop" parsed as item
+                    if {_item} is not set:
+                        set {_item} to yml value "%{_l}%.Item" in "shop"
+                        if "%{_item}%" contains "ia" or "itemadder":
+                            set {customshop::itemadder::shop} to {_shop}
+                            set {customshop::itemadder::line} to {_count}
+                            set {customshop::itemadder::slot} to yml value "%{_l}%.Slot" in "shop"
+                            set {customshop::itemadder::player} to {_user}
+                            set {customshop::itemadder::number} to loop-value-2
+                            execute console command "simpleskriptstore"
+                        replace all "_" with " " in {_item}
+                        set {_item} to {_item} parsed as item
+                set {_slot} to yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value-2%.Slot" in "shop"
+                set slot {_slot} of current inventory of {_user} to {_item}
+                set {_lore} to "Shops.%{_shop}%.Line %{_count}%.%loop-value-2%.Lore"
+                set {_name} to yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value-2%.Name" in "shop"
+                if {_name} is set:
+                    set name of slot {_slot} of current inventory of {_user} to {_name}
+                loop yml node keys {_lore} in "shop":
+                    set {_lore} to "Shops.%{_shop}%.Line %{_count}%.%loop-value-2%.Lore.%loop-value-3%"
+                    add yml value {_lore} in "shop" to lore of slot {_slot} of current inventory of {_user}
+                set {_purchase} to "Shops.%{_shop}%.Line %{_count}%.%loop-value-2%.Purchase"
+                set {_sale} to "Shops.%{_shop}%.Line %{_count}%.%loop-value-2%.Sale"
+                set {_purchase.view} to yml value {_purchase} in "shop"
+                set {_sale.view} to yml value {_sale} in "shop"
+                if "%yml value "Money.Thousands Separator" in "config"%" is "true":
+                    set {_purchase.view} to ThSe_Customshop("%{_purchase.view}%" parsed as integer)
+                    set {_sale.view} to ThSe_Customshop("%{_sale.view}%" parsed as integer)
+                if "%yml value {_purchase} in "shop"%" is set:
+                    set {_i} to "%yml value "Shop.Purchase.View" in "config"%"
+                    replace all "%%s" with "%{_purchase.view}%" in {_i}
+                    set {_y} to "%{_l}%.Set Bought"
+                    if "%yml value {_y} in "shop"%" is "true": 
+                        set {_y} to "Shop.Purchase.Set"
+                        add "%{_i}%%yml value {_y} in "config"%" to lore of slot {_slot} of current inventory of {_user}
+                    else:
+                        add {_i} to lore of slot {_slot} of current inventory of {_user}
+                if "%yml value {_sale} in "shop"%" is set:
+                    set {_i} to "%yml value "Shop.Sale.View" in "config"%"
+                    replace all "%%s" with "%{_sale.view}%" in {_i}
+                    set {_y} to "%{_l}%.All Sales"
+                    if "%yml value {_y} in "shop"%" is "true": 
+                        set {_y} to "Shop.Sale.All"
+                        add "%{_i}%%yml value {_y} in "config"%" to lore of slot {_slot} of current inventory of {_user}
+                    else:
+                        add {_i} to lore of slot {_slot} of current inventory of {_user}
+                if "%yml value {_sale} in "shop"%" is "-1":
+                    if "%yml value {_purchase} in "shop"%" is "-1":
+                        set name of slot {_slot} of current inventory of {_user} to " §f"
+                        delete lore of slot {_slot} of current inventory of {_user}
+        set {customshop::Shop_%{_user}%} to {_shop}
+        set {customshop::Count_%{_user}%} to {_count}
+    if {_chose} is "option":
+        loop 45 times:
+            set slot loop-value -1 of current inventory of {_user} to gray stained glass pane named " §f"
+        set {_i} to "Shops.%{customshop::Setting_%{_user}%}%.Line %{customshop::Count_%{_user}%}%"
+        if yml value {_i} in "shop" is not set:
+            set {_l} to "Shops.%{customshop::Setting_%{_user}%}%"
+            set {_l} to "Shops.%{customshop::Setting_%{_user}%}%.Line %size of yml node keys {_l} in "shop" -3%"
+            set yml value "%{_l}%.Row" in "shop" to 6
+            set yml value "%{_l}%.Money Slot" in "shop" to 49
+            set yml value "%{_l}%.Forward Slot" in "shop" to 53
+            set yml value "%{_l}%.Back Slot" in "shop" to 45
+            save yml "shop"
+        if "%yml value "Language" in "config"%" is "Korean":
+            set {_i} to "Shops.%{customshop::Setting_%{_user}%}%.Line %{customshop::Count_%{_user}%}%.Row"
+            loop 6 times:
+                if loop-value < 4:
+                    set slot 9 + loop-value of current inventory of {_user} to loop-value of chain named "§f§l[ 줄 : %loop-value% ]" with lore ""," §7§l클릭하여 해당 줄 수로 설정합니다.",""
+                else:
+                    set slot 10 + loop-value of current inventory of {_user} to loop-value of chain named "§f§l[ 줄 : %loop-value% ]" with lore ""," §7§l클릭하여 해당 줄 수로 설정합니다.",""
+                if "%yml value {_i} in "shop"% " is "%loop-value% ":
+                    if loop-value < 4:
+                        set slot 9 + loop-value of current inventory of {_user} to loop-value of candle named "§f§l[ §6§l줄 §f: %loop-value% ]" with lore ""," §7§l활성화된 줄 수 입니다."
+                    else:
+                        set slot 10 + loop-value of current inventory of {_user} to loop-value of candle named "§f§l[ §6§l줄 §f: %loop-value% ]" with lore ""," §7§l활성화된 줄 수 입니다."
+            set {_i} to "Shops.%{customshop::Setting_%{_user}%}%.Use"
+            if "%yml value {_i} in "shop"% " is "true ":
+                set slot 13 of current inventory of {_user} to lime dye named "§f[ §6활성화 §f]" with lore ""," §7§l상점이 활성화상태입니다. 클릭하여 비활성화합니다.",""
+            else:
+                set slot 13 of current inventory of {_user} to red dye named "§f[ §6비활성화 §f]" with lore ""," §7§l상점이 비활성화상태입니다. 클릭하여 활성화합니다.",""
+            set {_i} to "Shops.%{customshop::Setting_%{_user}%}%.Command"
+            if "%yml value {_i} in "shop"% " is "true ":
+                set slot 19 of current inventory of {_user} to command block named "§f[ §6§l활성화 §f]" with lore ""," §7§l명령어가 활성화상태입니다. 클릭하여 비활성화합니다.",""
+            else:
+                set slot 19 of current inventory of {_user} to command block named "§f[ §6§l비활성화 §f]" with lore ""," §7§l명령어가 비활성화상태입니다. 클릭하여 활성화합니다.",""
+            set slot 22 of current inventory of {_user} to grass block named "§f[ §6§l블럭 §f]"
+            set slot 25 of current inventory of {_user} to villager spawn egg named "§f[ §6§l엔티티 §f]"
+            set slot 28 of current inventory of {_user} to iron axe named "§f[ §6§l라인 제거 §f]" with lore ""," §7§l클릭하여 라인을 제거합니다.",""
+            set {_l} to "Shops.%{_shop}%"
+            set slot 31 of current inventory of {_user} to {_count} of barrel named "§f[ §6%{_count}%/%size of yml node keys {_l} in "shop" -4% §f]"
+            if {_count} < "%size of yml node keys {_l} in "shop" -4%" parsed as integer:
+                set slot 44 of current inventory of {_user} to feather named "§f[ §6§l다음으로 §f]" with lore ""," §7§l클릭하여 다음 라인으로 넘깁니다.",""
+            else if size of yml node keys {_l} in "shop" -4 is not 64:
+                set slot 44 of current inventory of {_user} to feather named "§f[ §a§l다음으로 §f]" with lore ""," §7§l클릭하여 다음 라인을 추가합니다.",""
+            if {_count} > 1:
+                set slot 36 of current inventory of {_user} to feather named "§f[ §6§l이전으로 §f]" with lore ""," §7§l클릭하여 이전 라인으로 이동합니다.",""
+            set slot 34 of current inventory of {_user} to emerald named "§f[ §6§l아이템 §f]" with lore ""," §7§l클릭하여 아이템 설정창으로 이동합니다.",""
+        else:
+            set {_i} to "Shops.%{customshop::Setting_%{_user}%}%.Line %{customshop::Count_%{_user}%}%.Row"
+            loop 6 times:
+                if loop-value < 4:
+                    set slot 9 + loop-value of current inventory of {_user} to loop-value of chain named "§f[ Row : %loop-value% ]" with lore ""," §7Click to set this as the selected line"
+                else:
+                    set slot 10 + loop-value of current inventory of {_user} to loop-value of chain named "§f[ Row : %loop-value% ]" with lore ""," §7Click to set this as the selected line"
+                if "%yml value {_i} in "shop"% " is "%loop-value% ":
+                    if loop-value < 4:
+                        set slot 9 + loop-value of current inventory of {_user} to loop-value of candle named "§f[ §6Row §f: %loop-value% ]" with lore ""," §7This is an active line.",""
+                    else:
+                        set slot 10 + loop-value of current inventory of {_user} to loop-value of candle named "§f[ §6Row §f: %loop-value% ]" with lore ""," §7This is an active line.",""
+            set {_i} to "Shops.%{customshop::Setting_%{_user}%}%.Command"
+            if "%yml value {_i} in "shop"% " is "true ":
+                set slot 19 of current inventory of {_user} to command block named "§f[ §6True §f]" with lore "","§7The command is currently active. Click to deactivate it.",""
+            else:
+                set slot 19 of current inventory of {_user} to command block named "§f[ §6False §f]" with lore "","§7The command is currently inactive. Click to activate it.",""
+            set slot 22 of current inventory of {_user} to grass block named "§f[ §6Location §f]"
+            set {_i} to "Shops.%{customshop::Setting_%{_user}%}%.Use"
+            if "%yml value {_i} in "shop"% " is "true ":
+                set slot 13 of current inventory of {_user} to lime dye named "§f[ §6True §f]" with lore ""," §7The shop is active. Click to deactivate it.",""
+            else:
+                set slot 13 of current inventory of {_user} to red dye named "§f[ §6False §f]" with lore ""," §7The shop is inactive. Click to activate it.",""
+            set slot 22 of current inventory of {_user} to grass block named "§f[ §6Locaiton §f]"
+            set slot 25 of current inventory of {_user} to villager spawn egg named "§f[ §6Entity §f]"
+            set slot 28 of current inventory of {_user} to iron axe named "§f[ §6Remove this line §f]" with lore ""," §7Click to remove this line",""
+            set {_l} to "Shops.%{_shop}%"
+            set slot 31 of current inventory of {_user} to {_count} of barrel named "§f[ §6%{_count}%/%size of yml node keys {_l} in "shop" -4% §f]"
+            if {_count} < "%size of yml node keys {_l} in "shop" -4%" parsed as integer:
+                set slot 44 of current inventory of {_user} to feather named "§f[ §6NEXT §f]" with lore ""," §7Click to move to the next line",""
+            else if size of yml node keys {_l} in "shop" -4 is not 64:
+                set slot 44 of current inventory of {_user} to feather named "§f[ §aNEXT §f]" with lore ""," §7Click to add a new one.",""
+            if {_count} > 1:
+                set slot 36 of current inventory of {_user} to feather named "§f[ §6BACK §f]" with lore ""," §7Click to move to the previous line.",""
+            set slot 34 of current inventory of {_user} to emerald named "§f[ §6item §f]" with lore ""," §7Click to open the item settings pages.",""
+        loop "X","Y","Z","World":
+            set {_i} to "Shops.%{customshop::Setting_%{_user}%}%.Location.%loop-value%"
+            if yml value {_i} in "shop" is set:
+                add "§7%loop-value% - %yml value {_i} in "shop"%" to lore of slot 22 of current inventory of {_user}
+            else:
+                add "§7%loop-value% - X" to lore of slot 22 of current inventory of {_user}
+        set {_i} to "Shops.%{customshop::Setting_%{_user}%}%.Entity"
+        if "%yml value {_i} in "shop"% " is not " ":
+            add "§7%yml value {_i} in "shop"%" to lore of slot 25 of current inventory of {_user}
+        else:
+            add "§7X" to lore of slot 25 of current inventory of {_user}
+        set {customshop::Option_%{_user}%} to {_shop}
+    if {_chose} is "shop":
+        set {_i} to "Shops.%{_shop}%.Line 1.Row"
+        if "%yml value "Using Resource" in "config"%" is "true":
+            if "%yml value {_i} in "shop"%" parsed as integer is 6:
+                open chest with "%yml value {_i} in "shop"%" parsed as integer rows named "§f" to {_user}
+            if "%yml value {_i} in "shop"%" parsed as integer is 5:
+                open chest with "%yml value {_i} in "shop"%" parsed as integer rows named "§f" to {_user}
+            if "%yml value {_i} in "shop"%" parsed as integer is 4:
+                open chest with "%yml value {_i} in "shop"%" parsed as integer rows named "§f" to {_user}
+            if "%yml value {_i} in "shop"%" parsed as integer is 3:
+                open chest with "%yml value {_i} in "shop"%" parsed as integer rows named "§f" to {_user}
+            if "%yml value {_i} in "shop"%" parsed as integer is 2:
+                open chest with "%yml value {_i} in "shop"%" parsed as integer rows named "§f" to {_user}
+            if "%yml value {_i} in "shop"%" parsed as integer is 1:
+                open chest with "%yml value {_i} in "shop"%" parsed as integer rows named "§f" to {_user}
+        else:
+            if "%yml value "Language" in "config"%" is "Korean":
+                set {_l} to "§l상점 [ %{_shop}% ]"
+            else:
+                set {_l} to "SHOP [ %{_shop}% ]"
+            open chest with "%yml value {_i} in "shop"%" parsed as integer rows named {_l} to {_user}
+        customshop({_user},{_shop},"menu",0,1)
+    if {_chose} is "item":
+        if {_item} is 0:
+            close {_user}'s inventory
+            set block above {_user} to oak sign 
+            open sign gui above location of {_user} to {_user}
+            set {customshop::Sings_%{_user}%} to {_shop}
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "§a[!] §f§l설정할 라인 번호를 입력해주세요." to {_user}
+                stop
+            message "§a[!] §fPlease enter the line number to configure." to {_user}
+            stop
+        if {_item} is 1:
+            if "%yml value "Language" in "config"%" is "Korean":
+                open chest with 6 rows named "§f[ §6§l아이템 설정 §f] %{_shop}% [ %{_count}% ]" to {_user}
+            else:
+                open chest with 6 rows named "§f[ §6item setting §f] %{_shop}% [ %{_count}% ]" to {_user}
+            set {_s} to current inventory of {_user}
+            set {customshop::Item_%{_user}%} to true
+            set {_m} to "Shops.%{_shop}%.Line %{_count}%"
+            if "%yml value {_m} in "shop"%" is "<none>":
+                set yml value "Shops.%{_shop}%.Line %{_count}%.Row" in "shop" to 6
+                set yml value "Shops.%{_shop}%.Line %{_count}%.Money Slot" in "shop" to 49
+                set yml value "Shops.%{_shop}%.Line %{_count}%.Forward Slot" in "shop" to 53
+                set yml value "Shops.%{_shop}%.Line %{_count}%.Back Slot" in "shop" to 45
+                save yml "shop"
+            loop 54 times:
+                set slot loop-value -1 of {_s} to black stained glass pane named " "
+                if "%yml value "Language" in "config"%" is "Korean":
+                    set name of slot loop-value -1 of {_s} to "§7클릭하여 아이템을 설정합니다."
+                else:
+                    set name of slot loop-value -1 of {_s} to "§7Click to configure the item."
+            loop yml node keys "Shops.%{_shop}%.Line %{_count}%" in "shop":
+                set {_item} to yml value "Shops.%{_shop}%.Line %{_count}%.Item" in "shop" parsed as item
+                if {_item} is not set:
+                    set {_item} to yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Item" in "shop"
+                    if "%{_item}%" contains "ia" or "itemadder":
+                        set {customshop::itemadder::shop} to {_shop}
+                        set {customshop::itemadder::line} to {_count}
+                        set {customshop::itemadder::slot} to yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop"
+                        set {customshop::itemadder::player} to {_user}
+                        set {customshop::itemadder::number} to loop-value
+                        execute console command "simpleskriptstore"
+                    replace all "_" with " " in {_item}
+                    set {_item} to {_item} parsed as item
+                set slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop" of {_s} to {_item}
+                wait 1 ticks
+                if name of current inventory of {_user} is "§f[ §6§l아이템 설정 §f] %{_shop}% [ %{_count}% ]" or "§f[ §6item setting §f] %{_shop}% [ %{_count}% ]":
+                    delete lore of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value-1%.Slot" in "shop" of {_s}
+                    set {_lore} to "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Lore"
+                    set {_name} to "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Name"
+                    set {_name} to yml value {_name} in "shop"
+                    if {_name} is set:
+                        if "%yml value "Language" in "config"%" is "Korean":
+                            set name of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop" of {_s} to "%{_name}% §f[ §a§l설정 §f]"
+                        else:
+                            set name of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop" of {_s} to "%{_name}% §f[ §aSetting §f]"
+                    else if "%yml value "Language" in "config"%" is "Korean":
+                        set name of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop" of {_s} to "§f[ §a§l설정 §f]"
+                    else:
+                        set name of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop" of {_s} to "§f[ §aSetting §f]"
+                    loop yml node keys {_lore} in "shop":
+                        set {_lore} to "Shops.%{_shop}%.Line %{_count}%.%loop-value-1%.Lore.%loop-value-2%"
+                        add yml value {_lore} in "shop" to lore of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value-1%.Slot" in "shop" of {_s}
+                    set {_purchase} to "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Purchase"
+                    set {_sale} to "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Sale"
+                    if "%yml value "Money.Thousands Separator" in "config"%" is "true":
+                        set {_purchase.view} to yml value {_purchase} in "shop"
+                        set {_sale.view} to yml value {_sale} in "shop"
+                        set {_purchase.view} to ThSe_Customshop("%{_purchase.view}%" parsed as integer)
+                        set {_sale.view} to ThSe_Customshop("%{_sale.view}%" parsed as integer)
+                    if "%yml value {_purchase} in "shop"%" is set:
+                        set {_i} to "Shop.Purchase.View"
+                        set {_i} to yml value {_i} in "config"
+                        replace all "%%s" with {_purchase.view} in {_i}
+                        set {_y} to "%{_l}%.Set Bought"
+                        if "%yml value {_y} in "shop"%" is "true": 
+                            set {_y} to "Shop.Purchase.Set"
+                            add "%{_i}%%yml value {_y} in "config"%" to lore of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop" of {_s}
+                        else:
+                            add {_i} to lore of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop" of {_s}
+                    if "%yml value {_sale} in "shop"%" is set:
+                        set {_i} to "Shop.Sale.View"
+                        set {_i} to yml value {_i} in "config"
+                        replace all "%%s" with {_sale.view} in {_i}
+                        set {_y} to "%{_l}%.All Sales"
+                        if "%yml value {_y} in "shop"%" is "true": 
+                            set {_y} to "Shop.Sale.All"
+                            add "%{_i}%%yml value {_y} in "config"%" to lore of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop" of {_s}
+                        else:
+                            add {_i} to lore of slot yml value "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot" in "shop" of {_s}
+            if name of current inventory of {_user} is "§f[ §6§l아이템 설정 §f] %{_shop}% [ %{_count}% ]" or "§f[ §6item setting §f] %{_shop}% [ %{_count}% ]":
+                loop 54 times:
+                    add 1 to {_d}
+                    if slot {_d} -1 of {_s} is air:
+                        set slot {_d} -1 of {_s} to black stained glass pane named " "
+                        if name of current inventory of {_user} is "§f[ §6§l아이템 설정 §f] %{_shop}% [ %{_count}% ]" or "§f[ §6item setting §f] %{_shop}% [ %{_count}% ]":
+                            if "%yml value "Language" in "config"%" is "Korean":
+                                set name of slot {_d} -1 of {_s} to "§7클릭하여 아이템을 설정합니다."
+                            else:
+                                set name of slot {_d} -1 of {_s} to "§7Click to configure the item."
+                if {_s} is set:
+                    set {customshop::Item_%{_user}%} to {_shop}
+                    set {customshop::Count_%{_user}%} to {_count}
+    if {_chose} is "setup":
+        if name of {_user}'s inventory is not "§f[ §l%{_shop}%상점 §f] %{_item}%§l번 슬롯" or "[ %{_shop}% Shop ] Slot %{_item}%":
+            if "%yml value "Language" in "config"%" is "Korean":
+                open chest with 3 rows named "§f[ §l%{_shop}%상점 §f] %{_item}%§l번 슬롯" to {_user}
+            else:
+                open chest with 3 rows named "[ %{_shop}% Shop ] Slot %{_item}%" to {_user}
+        set {customshop::Setup_%{_user}%} to {_shop}
+        set {customshop::Count_%{_user}%} to {_count}
+        set {customshop::Integer_%{_user}%} to {_item}
+        set {_l} to "Shops.%{_shop}%.Line %{_count}%"
+        loop yml node key {_l} in "shop":
+            set {_l} to "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot"
+            if "%yml value {_l} in "shop"% " is "%{_item}% ":
+                set {_ic} to loop-value
+        if {_ic} is not set:
+            loop "Purchase","Sale":
+                set yml value "Shops.%{_shop}%.Line %{_count}%.Item %{_item}%.%loop-value%" in "shop" to 0
+                set {_ic} to "Item %{_item}%"
+        else:
+            set {_item} to {_ic}
+        set {customshop::String_%{_user}%} to {_item}
+        loop 6 times:
+            set {_v%loop-value%} to yml value "Money.Display" in "config"
+            if loop-value is 1:
+                replace all "%%s" with "1" in {_v%loop-value%}
+            else if "%yml value "Money.Thousands Separator" in "config"%" is "true":
+                replace all "%%s" with ThSe_Customshop(10^(loop-value -1)) in {_v%loop-value%}
+            else:
+                replace all "%%s" with "%10^(loop-value -1)%" in {_v%loop-value%}
+        set slot 3,4,5,12,14,21,23 of current inventory of {_user} to black stained glass pane named " "
+        if "%yml value "Language" in "config"%" is "Korean":
+            loop "구매가","판매가":
+                if loop-value is "구매가":
+                    set {_l} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Purchase" in "shop"
+                if loop-value is "판매가":
+                    set {_l} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Sale" in "shop"
+                if "%{_l}% " is not "<none> ":
+                    if "%yml value "Money.Thousands Separator" in "config"%" is "true":
+                        set {_l} to ThSe_Customshop("%{_l}%" parsed as integer)
+                else:
+                    set {_l} to 0
+                set {_n} to yml value "Money.Display" in "config"
+                replace all "%%s" with "%{_l}%" in {_n}
+                set {_l} to {_n}
+                set slot 0 + {_i}*6 of current inventory of {_user} to orange dye named "§f[ %{_v1}% §a§l추가§f ] | [ %{_l}% ]" with lore "§7§l클릭하여 §e§l%loop-value%§7§l에서 %{_v1}%을(를) §a§l추가§7§l합니다.","§7§l➥ §a§l쉬프트§7§l를 눌러 %{_v4}%을(를) §a§l추가§7§l합니다."
+                set slot 1 + {_i}*6 of current inventory of {_user} to orange dye named "§f[ %{_v2}% §a§l추가§f ] | [ %{_l}% ]" with lore "§7§l클릭하여 §e§l%loop-value%§7§l에서 %{_v2}%을(를) §a§l추가§7§l합니다.","§7§l➥ §a§l쉬프트§7§l를 눌러 %{_v5}%을(를) §a§l추가§7§l합니다."
+                set slot 2 + {_i}*6 of current inventory of {_user} to orange dye named "§f[ %{_v3}% §a§l추가§f ] | [ %{_l}% ]" with lore "§7§l클릭하여 §e§l%loop-value%§7§l에서 %{_v3}%을(를) §a§l추가§7§l합니다.","§7§l➥ §a§l쉬프트§7§l를 눌러 %{_v6}%을(를) §a§l추가§7§l합니다."
+                set slot 18 + {_i}*6 of current inventory of {_user} to light blue dye named "§f[ %{_v1}% §c§l제거§f ] | [ %{_l}% ]" with lore "§7§l클릭하여 §e§l%loop-value%§7§l에서 %{_v1}%을(를) §c§l제거§7§l합니다.","§7§l➥ §a§l쉬프트§7§l를 눌러 %{_v4}%을(를) §c§l제거§7§l합니다."
+                set slot 19 + {_i}*6 of current inventory of {_user} to light blue dye named "§f[ %{_v2}% §c§l제거§f ] | [ %{_l}% ]" with lore "§7§l클릭하여 §e§l%loop-value%§7§l에서 %{_v2}%을(를) §c§l제거§7§l합니다.","§7§l➥ §a§l쉬프트§7§l를 눌러 %{_v5}%을(를) §c§l제거§7§l합니다."
+                set slot 20 + {_i}*6 of current inventory of {_user} to light blue dye named "§f[ %{_v3}% §c§l제거§f ] | [ %{_l}% ]" with lore "§7§l클릭하여 §e§l%loop-value%§7§l에서 %{_v3}%을(를) §c§l제거§7§l합니다.","§7§l➥ §a§l쉬프트§7§l를 눌러 %{_v6}%을(를) §c§l제거§7§l합니다."
+                set slot 9 + {_i}*6 of current inventory of {_user} to name tag named "§f[ §l%loop-value% §a§l입력 §f]" with lore "§7§l클릭하여 §e§l%loop-value%§7§l을(를) §a§l변경§7§l합니다."
+                set slot 10 + {_i}*6 of current inventory of {_user} to diamond named "§f[ §l%loop-value% ] : %{_l}%"
+                if loop-value is "구매가":
+                    set {_l} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Set Bought" in "shop"
+                    if {_l} is true:
+                        set slot 11 + {_i}*6 of current inventory of {_user} to chest named "§f[ §l세트 구매 ] : §a§l활성화"
+                    else:
+                        set slot 11 + {_i}*6 of current inventory of {_user} to chest named "§f[ §l세트 구매 ] : §c§l비활성화"
+                else:
+                    set {_l} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.All Sales" in "shop"
+                    if {_l} is true:
+                        set slot 11 + {_i}*6 of current inventory of {_user} to chest named "§f[ §l전체 판매 §f] : §a§l활성화"
+                    else:
+                        set slot 11 + {_i}*6 of current inventory of {_user} to chest named "§f[ §l전체 판매 §f] : §c§l비활성화"
+                add 1 to {_i}
+        else:
+            loop "purchase price","sell price":
+                if loop-value is "purchase price":
+                    set {_l} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Purchase" in "shop"
+                if loop-value is "sell price":
+                    set {_l} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Sale" in "shop"
+                if "%{_l}% " is not "<none> ":
+                    if "%yml value "Money.Thousands Separator" in "config"%" is "true":
+                        set {_l} to ThSe_Customshop("%{_l}%" parsed as integer)
+                else:
+                    set {_l} to 0
+                set {_n} to yml value "Money.Display" in "config"
+                replace all "%%s" with "%{_l}%" in {_n}
+                set {_l} to {_n}
+                set slot 0 + {_i}*6 of current inventory of {_user} to orange dye named "§f[ %{_v1}% §aAdd§f ] | [ %{_l}% ]" with lore "§7Click to add %{_v1}% to §ethe %loop-value%§7.", "§7➥ Hold §aShift§7 to add %{_v4}%."
+                set slot 1 + {_i}*6 of current inventory of {_user} to orange dye named "§f[ %{_v2}% §aAdd§f ] | [ %{_l}% ]" with lore "§7Click to add %{_v2}% to §ethe %loop-value%§7.", "§7➥ Hold §aShift§7 to add %{_v5}%."
+                set slot 2 + {_i}*6 of current inventory of {_user} to orange dye named "§f[ %{_v3}% §aAdd§f ] | [ %{_l}% ]" with lore "§7Click to add %{_v3}% to §ethe %loop-value%§7.", "§7➥ Hold §aShift§7 to add %{_v6}%."
+                set slot 18 + {_i}*6 of current inventory of {_user} to light blue dye named "§f[ %{_v1}% §cRemove§f ] | [ %{_l}% ]" with lore "§7Click to remove %{_v1}% from §ethe %loop-value%§7.", "§7➥ Hold §aShift§7 to §c§lremove§7 %{_v4}%."
+                set slot 19 + {_i}*6 of current inventory of {_user} to light blue dye named "§f[ %{_v2}% §cRemove§f ] | [ %{_l}% ]" with lore "§7Click to remove %{_v2}% from §ethe %loop-value%§7.", "§7➥ Hold §aShift§7 to §c§lremove§7 %{_v5}%."
+                set slot 20 + {_i}*6 of current inventory of {_user} to light blue dye named "§f[ %{_v3}% §cRemove§f ] | [ %{_l}% ]" with lore "§7Click to remove %{_v3}% from §ethe %loop-value%§7.", "§7➥ Hold §aShift§7 to §c§lremove§7 %{_v6}%."
+                set slot 9 + {_i}*6 of current inventory of {_user} to name tag named "§f[ %loop-value% §atype §f]" with lore "§7§lClick to §achange§7§l §e%loop-value%§7."
+                set slot 10 + {_i}*6 of current inventory of {_user} to diamond named "§f[ %loop-value% ] : %{_l}%"
+                if loop-value is "purchase price":
+                    set {_l} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Set Bought" in "shop"
+                    if {_l} is true:
+                        set slot 11 + {_i}*6 of current inventory of {_user} to chest named "§f[ Set Bought ] : §aTrue"
+                    else:
+                        set slot 11 + {_i}*6 of current inventory of {_user} to chest named "§f[ Set Bought ] : §cFalse"
+                else:
+                    set {_l} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.All Sales" in "shop"
+                    if {_l} is true:
+                        set slot 11 + {_i}*6 of current inventory of {_user} to chest named "§f[ All Sales ] : §aTrue"
+                    else:
+                        set slot 11 + {_i}*6 of current inventory of {_user} to chest named "§f[ All Sales ] : §cFalse"
+                add 1 to {_i}
+        set {_i} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Item" in "shop" parsed as itemtype
+        if {_i} is not set:
+            set {_i} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Item" in "shop"
+            if "%{_i}%" contains "ia" or "itemadder":
+                set {customshop::itemadder::line} to {_count}
+                set {customshop::itemadder::shop} to {_shop}
+                set {customshop::itemadder::slot} to 13
+                set {customshop::itemadder::player} to {_user}
+                set {customshop::itemadder::number} to {_item}
+                execute console command "simpleskriptstore"
+            else:
+                replace all "_" with " " in {_i}
+                set {_i} to {_i} parsed as item
+                set slot 13 of current inventory of {_user} to {_i}
+        else:
+            set slot 13 of current inventory of {_user} to {_i}
+        wait 2 ticks
+        delete lore of slot 13 of current inventory of {_user}
+        set {_i} to "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Name"
+        if "%yml value {_i} in "shop"%" is not "<none>":
+            set name of slot 13 of current inventory of {_user} to "%yml value {_i} in "shop"%"
+        set {_lore} to "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Lore"
+        loop yml node keys {_lore} in "shop":
+            set {_lore} to "Shops.%{_shop}%.Line %{_count}%.%{_item}%.Lore.%loop-value%"
+            add yml value {_lore} in "shop" to lore of slot 13 of current inventory of {_user}
+    if {_chose} is "buy" or "sell":
+        loop yml node key "Shops.%{_shop}%.Line %{_count}%" in "shop":
+            set {_i} to "Shops.%{_shop}%.Line %{_count}%.%loop-value%.Slot"
+            if "%yml value {_i} in "shop"%" is "%{_item}%":
+                set {_i} to loop-value
+                exit loop
+        set {_l} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Item" in "shop"
+        if {_l} contains "ia" or "itemadder":
+            set {customshop::itemadder::line} to {_count}
+            set {customshop::itemadder::shop} to {_shop}
+            set {customshop::itemadder::player} to {_user}
+            set {customshop::itemadder::number} to {_i}
+            execute console command "simpleskriptbuy"
+            stop
+        replace all "_" with " " in {_l}
+        set {_l} to {_l} parsed as item
+        if yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Name" in "shop" is not set:
+            set {_x} to {_l}
+        else:
+            set {_x} to yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Name" in "shop"
+        if {_chose} is "buy":
+            set {_h} to 1
+            if {customshop::Shift_%{_user}%} is true:
+                set {_h} to max stack size of {_l}
+                if {_user} has not enough space for max stack size of {_l} of {_l}:
+                    delete {_h}
+                    loop max stack size of {_l} times:
+                        if {_user} has not enough space for loop-value of {_l}:
+                            add 1 to {_h}
+                if ({_h} * yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Purchase" in "shop") > {_user}'s money:
+                    delete {_h}
+                    loop max stack size of {_l} times:
+                        if (loop-value * yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Purchase" in "shop") <= {_user}'s money:
+                            add 1 to {_h}
+            delete {customshop::Shift_%{_user}%}
+            if ({_h} * yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Purchase" in "shop") > {_user}'s money:
+                play sound yml value "Sounds.Fail" in "config" to {_user}
+                if "%yml value "Language" in "config"%" is "Korean":
+                    message "§c[!] §f§l돈이 부족합니다." to {_user}
+                else:
+                    message "§c[!] §fNot enough money." to {_user}
+                stop
+            if {_h} is set:
+                play sound yml value "Sounds.Success" in "config" to {_user}
+                set {_c} to {_h} * yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Purchase" in "shop"
+                subtract {_c} from {_user}'s money
+                set {_m} to "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Lore"
+                loop yml node key {_m} in "shop":
+                    add yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Lore.%loop-value%" in "shop" to {_b::*}
+                give {_l} named yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Name" in "shop" with lore {_b::*} to {_user}
+                if "%yml value "Shop.Purchase.Log" in "config"%" is "true":
+                    loop yml node key "%{_user}%" in "purchaselog":
+                        add 1 to {_z}
+                    set yml value "%{_user}%.%1 + {_z}%" in "purchaselog" to "%now% / Shop : %{_shop}% , Line : %{_count}% , Item : %{_i}% , Count : %{_h}% , Purchase : %{_c}%"
+                    save yml "purchaselog"
+                if "%yml value "Language" in "config"%" is "Korean":
+                    if {_h} is 1:
+                        message "§a[!] §f%{_x}%§f§l을(를) 구매하였습니다." to {_user}
+                        stop
+                    message "§a[!] §f%{_x}%§f§l을(를) %{_h}%개 구매하였습니다." to {_user}
+                    stop
+                if {_h} is 1:
+                    message "§a[!] §fPurchased %{_x}%§f." to {_user}
+                    stop
+                message "§a[!] §fPurchased %{_h}% of %{_x}%§f." to {_user}
+                stop
+            play sound yml value "Sounds.Fail" in "config" to {_user}
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "§c[!] §f§l돈 혹은 인벤토리 공간이 부족합니다." to {_user}
+                stop
+            message "§c[!] §fNot enough money or inventory space." to {_user}
+            stop
+        if {_chose} is "sell":
+            set {_h} to (1*(item amount of {_l}))
+            if {customshop::Shift_%{_user}%} is true:
+                set {_h} to 1
+                loop 2368 times:
+                    if {_user} has (1 + loop-value) of {_l}:
+                        add 1 to {_h}
+            delete {customshop::Shift_%{_user}%}
+            if {_user} has {_h} of {_l}:
+                play sound yml value "Sounds.Success" in "config" to {_user}
+                set {_m} to "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Lore"
+                set {_c} to {_h} * yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Sale" in "shop"
+                loop yml node key {_m} in "shop":
+                    add yml value "Shops.%{_shop}%.Line %{_count}%.%{_i}%.Lore.%loop-value%" in "shop" to {_b::*}
+                if {_x} is {_l}:
+                    remove {_h} of {_l} with lore {_b::*} from {_user}
+                else:
+                    remove {_h} of {_l} named {_x} with lore {_b::*} from {_user}
+                subtract {_c} from {_user}'s money
+                if "%yml value "Shop.Sale.Log" in "config"%" is "true":
+                    loop yml node key "%{_user}%" in "salelog":
+                        add 1 to {_z}
+                    set yml value "%{_user}%.%1 + {_z}%" in "salelog" to "%now% / Shop : %{_shop}% , Line : %{_count}% , Item : %{_i}% , Count : %{_h}% , Sale : %{_c}%"
+                    save yml "salelog"
+                if "%yml value "Language" in "config"%" is "Korean":
+                    if {_h} is 1:
+                        message "§a[!] §f%{_x}%§f§l을(를) 판매하였습니다." to {_user}
+                        stop
+                    message "§a[!] §f%{_x}%§f§l을(를) %{_h}%개 판매하였습니다." to {_user}
+                    stop
+                if {_h} is 1:
+                    message "§a[!] §fSold %{_x}%§f." to {_user}
+                    stop
+                message "§a[!] §fSold %{_h}% of %{_x}%§f." to {_user}
+                stop
+            play sound yml value "Sounds.Fail" in "config" to {_user}
+            if "%yml value "Language" in "config"%" is "Korean":
+                message "§c[!] §f%{_x}%§f§l을(를) 보유중이지 않습니다." to {_user}
+                stop
+            message "§c[!] §fYou don't have %{_x}%§f." to {_user}
+            stop
+    if {_chose} is "reset":
+        if {_item} is 0:
+            delete yml "config"
+            load yml "plugins\customshop\config.yml" as "config"
+            set the comment at the top of "config" to "This script is written by @taome01 in https://discord.gg/Wf77jH2skg","Resource producer: @9oo_9oo","Translator: @wayggstar"
+            set yml value "Language" in "config" to "English"
+            set the comment of yml node "Language" in "config" to "If you type English, you can use English message. If you type Korean, you can use Korean message.","'English'를 입력하면 영어를 이용할 수 있습니다, 'Korean'을 입력하면 한글을 이용할 수 있습니다."
+            set yml value "Money.Display" in "config" to "§f%%s$"
+            set yml value "Money.Thousands Separator" in "config" to true
+            set the comment of yml node "Money" in "config" to "In Money.Display, ‘%%s’ is parameter of money. For example, if you write ‘%%s$’, it might be displayed like 1000$.","If you type true in Money.Thousands Separator, it will be activated, and if the amount of money is 1000, it will be displayed as 1,000.","Money.Display에서 '%%s'는 돈입니다. '%%s$'이라고 하면 1000$와 같이 표시되는 것입니다.","Money.Thousands Separator 에서 true를 입력하면 활성화되며 돈의 금액이 1000이라했을때 1,000과 같이 표시됩니다."
+            set yml value "Using Resource" in "config" to false
+            set the comment of yml node "Using Resource" in "config" to "You can change gui resource in the script.","구문 내에서 리소스를 사용할 수 있도록 합니다."
+            set yml value "Permission Message" in "config" to "It's a command you can't use."
+            set the comment of yml node "Permission Message" in "config" to "You can set warn message for changing this section.","이를 변경하여 경고 메시지를 설정할 수 있습니다."
+            set yml value "Sounds.Success" in "config" to "block.note_block.bell"
+            set yml value "Sounds.Fail" in "config" to "block.note_block.bass"
+            set the comment of yml node "Sounds" in "config" to "You can change success, fail sound for this section","변경하여 실행 성공 소리와 실패 소리를 바꿀 수 있습니다."
+            set yml value "Shop.Purchase.View" in "config" to "§6§l| §7%%s$"
+            set yml value "Shop.Purchase.Log" in "config" to false
+            set yml value "Shop.Purchase.Set" in "config" to "[Shift] SET"
+            set yml value "Shop.Sale.View" in "config" to "§6§l| §7%%s$"
+            set yml value "Shop.Sale.Log" in "config" to false
+            set yml value "Shop.Sale.All" in "config" to "[Shift] All"
+            set the comment of yml node "Shop" in "config" to "If you set 'true' in Log, this will store in 'plugins/cumstomshop/(section)log.txt`.","If you change View, you can change expression of each section. %%s is price.","Log에서 true로 설정할시 '/plugins/customshop/(각 항목)log.txt로 저장됩니다.","View를 변경하면 각 항목의 표시를 변경할 수 있습니다. %%s는 금액입니다."
+            save yml "config"
+        if {_item} is 1:
+            delete yml "shop"
+            load yml "plugins\customshop\shop.yml" as "shop"
+            set yml value "List" in "shop" to "test"
+            set yml value "Shops.test.Use" in "shop" to false
+            set yml value "Shops.test.Location" in "shop" to ""
+            set yml value "Shops.test.Location.X" in "shop" to "300"
+            set yml value "Shops.test.Location.Y" in "shop" to "100"
+            set yml value "Shops.test.Location.Z" in "shop" to "200"
+            set yml value "Shops.test.Command" in "shop" to true
+            set yml value "Shops.test.Entity" in "shop" to ""
+            set yml value "Shops.test.Line 1.Row" in "shop" to 6
+            set yml value "Shops.test.Line 1.Money Slot" in "shop" to 49
+            set yml value "Shops.test.Line 1.Forward Slot" in "shop" to 53
+            set yml value "Shops.test.Line 1.item 1.Item" in "shop" to "stone"
+            set yml value "Shops.test.Line 1.item 1.Slot" in "shop" to 1
+            set yml value "Shops.test.Line 1.item 1.Purchase" in "shop" to 10
+            set yml value "Shops.test.Line 1.item 1.Sale" in "shop" to 5
+            set yml value "Shops.test.Line 1.item 1.Set Bought" in "shop" to false
+            set yml value "Shops.test.Line 1.item 1.All Sales" in "shop" to false
+            set yml value "Shops.test.Line 1.test123.Item" in "shop" to "golden_sword"
+            set yml value "Shops.test.Line 1.test123.Name" in "shop" to "test 2"
+            set yml value "Shops.test.Line 1.test123.Lore.line 1" in "shop" to "test Lore 1"
+            set yml value "Shops.test.Line 1.test123.Lore.line 2" in "shop" to "test Lore 2"
+            set yml value "Shops.test.Line 1.test123.Slot" in "shop" to 2
+            set yml value "Shops.test.Line 1.test123.Purchase" in "shop" to 1
+            set yml value "Shops.test.Line 1.test123.Sale" in "shop" to 3
+            save yml "shop"
